@@ -24,6 +24,6 @@ public class HomeControllerTest {
         mockMvc.perform(MockMvcRequestBuilders.get("/"))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.view().name("home"))
-                .andExpect(MockMvcResultMatchers.content().string(containsString("Welcome to...")));
+                .andExpect(MockMvcResultMatchers.content().string(containsString("Welcome to Taco Cloud")));
     }
 }
