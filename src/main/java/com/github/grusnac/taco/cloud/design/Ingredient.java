@@ -12,14 +12,6 @@ public class Ingredient {
         this.type = type;
     }
 
-    public static enum Type {
-        WRAP,
-        PROTEIN,
-        VEGGIES,
-        CHEESE,
-        SAUCE
-    }
-
     public String getId() {
         return id;
     }
@@ -30,5 +22,13 @@ public class Ingredient {
 
     public Type getType() {
         return type;
+    }
+
+    public enum Type {
+        WRAP,
+        PROTEIN,
+        VEGGIES,
+        CHEESE,
+        SAUCE
     }
 }

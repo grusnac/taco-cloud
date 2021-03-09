@@ -14,25 +14,25 @@
             <span class="validation-error">Please correct the problems below and resubmit</span>
         </div>
         <h3>Deliver my taco masterpieces to...</h3>
-        <label for="name">Name: </label>
-        <input id="name" type="text" th:field="*{name}"/>
-        <span class="validation-error" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Blank name</span>
+        <label for="deliveryName">Name: </label>
+        <input id="deliveryName" type="text" th:field="*{deliveryName}"/>
+        <span class="validation-error" th:if="${#fields.hasErrors('deliveryName')}" th:errors="*{deliveryName}">Blank name</span>
         <br/>
         <label for="street">Street address:</label>
-        <input id="street" type="text" th:field="*{street}"/>
-        <span class="validation-error" th:if="${#fields.hasErrors('street')}" th:errors="*{street}">Blank street</span>
+        <input id="street" type="text" th:field="*{deliveryStreet}"/>
+        <span class="validation-error" th:if="${#fields.hasErrors('deliveryStreet')}" th:errors="*{deliveryStreet}">Blank street</span>
         <br/>
         <label for="city">City:</label>
-        <input id="city" type="text" th:field="*{city}"/>
-        <span class="validation-error" th:if="${#fields.hasErrors('city')}" th:errors="*{city}">Blank city</span>
+        <input id="city" type="text" th:field="*{deliveryCity}"/>
+        <span class="validation-error" th:if="${#fields.hasErrors('deliveryCity')}" th:errors="*{deliveryCity}">Blank city</span>
         <br/>
         <label for="state">State:</label>
-        <input id="state" type="text" th:field="*{state}"/>
-        <span class="validation-error" th:if="${#fields.hasErrors('state')}" th:errors="*{state}">Blank state</span>
+        <input id="state" type="text" th:field="*{deliveryState}"/>
+        <span class="validation-error" th:if="${#fields.hasErrors('deliveryState')}" th:errors="*{deliveryState}">Blank state</span>
         <br/>
         <label for="zip">Zip code:</label>
-        <input id="zip" type="text" th:field="*{zip}"/>
-        <span class="validation-error" th:if="${#fields.hasErrors('zip')}" th:errors="*{zip}">Blank zip</span>
+        <input id="zip" type="text" th:field="*{deliveryZip}"/>
+        <span class="validation-error" th:if="${#fields.hasErrors('deliveryZip')}" th:errors="*{deliveryZip}">Blank zip</span>
         <br/>
 
         <h3>Here's how I'll pay...</h3>
