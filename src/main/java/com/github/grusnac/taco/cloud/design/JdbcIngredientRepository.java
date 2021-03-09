@@ -1,6 +1,5 @@
-package com.github.grusnac.taco.cloud.db;
+package com.github.grusnac.taco.cloud.design;
 
-import com.github.grusnac.taco.cloud.design.Ingredient;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -18,30 +17,30 @@ public class JdbcIngredientRepository implements IngredientRepository {
     }
 
     @Override
-    public Collection<Ingredient> findAll() {
+    public Collection<IngredientEntity> findAll() {
         return jdbcTemplate.query("select id, name, type from Ingredient", this::mapRowToIngredient);
     }
 
     @Override
-    public Ingredient find(String id) {
+    public IngredientEntity find(String id) {
         return jdbcTemplate.queryForObject("select id, name, type from Ingredient where id=?",
                 this::mapRowToIngredient, id);
     }
 
     @Override
-    public Ingredient save(Ingredient ingredient) {
+    public IngredientEntity save(IngredientEntity ingredientEntity) {
         jdbcTemplate.update("insert into Ingredient (id, name, type) values (?,?,?)",
-                ingredient.getId(),
-                ingredient.getName(),
-                ingredient.getType().name());
-        return ingredient;
+                ingredientEntity.getId(),
+                ingredientEntity.getName(),
+                ingredientEntity.getType().name());
+        return ingredientEntity;
     }
 
-    private Ingredient mapRowToIngredient(ResultSet resultSet, int rowNumber) throws SQLException {
-        return new Ingredient(
+    private IngredientEntity mapRowToIngredient(ResultSet resultSet, int rowNumber) throws SQLException {
+        return new IngredientEntity(
                 resultSet.getString("id"),
                 resultSet.getString("name"),
-                Ingredient.Type.valueOf(resultSet.getString("type"))
+                IngredientEntity.Type.valueOf(resultSet.getString("type"))
         );
     }
 }

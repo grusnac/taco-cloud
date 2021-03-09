@@ -1,10 +1,9 @@
 package com.github.grusnac.taco.cloud.design;
 
-import com.github.grusnac.taco.cloud.db.IngredientRepository;
-import com.github.grusnac.taco.cloud.db.TacoRepository;
-import com.github.grusnac.taco.cloud.order.Order;
+import com.github.grusnac.taco.cloud.order.OrderView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
@@ -14,7 +13,6 @@ import javax.validation.Valid;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.groupingBy;
 
@@ -27,65 +25,47 @@ public class DesignTacoController {
 
     private final TacoRepository tacoRepository;
     private final IngredientRepository ingredientRepository;
+    private final ConversionService conversionService;
 
-    public DesignTacoController(TacoRepository tacoRepository, IngredientRepository ingredientRepository) {
+    public DesignTacoController(TacoRepository tacoRepository, IngredientRepository ingredientRepository,
+                                ConversionService conversionService) {
         this.tacoRepository = tacoRepository;
         this.ingredientRepository = ingredientRepository;
+        this.conversionService = conversionService;
     }
-
-//    @ModelAttribute
-//    public void addIngredientsToModel(Model model) {
-//        List<Ingredient> ingredients = Arrays.asList(
-//                new Ingredient("FLTO", "Flour Tortilla", Ingredient.Type.WRAP),
-//                new Ingredient("COTO", "Corn Tortilla", Ingredient.Type.WRAP),
-//                new Ingredient("GRBF", "Ground Beef", Ingredient.Type.PROTEIN),
-//                new Ingredient("CARN", "Carnitas", Ingredient.Type.PROTEIN),
-//                new Ingredient("TMTO", "Diced Tomatoes", Ingredient.Type.VEGGIES),
-//                new Ingredient("LETC", "Lettuce", Ingredient.Type.VEGGIES),
-//                new Ingredient("CHED", "Cheddar", Ingredient.Type.CHEESE),
-//                new Ingredient("JACK", "Monterrey Jack", Ingredient.Type.CHEESE),
-//                new Ingredient("SLSA", "Salsa", Ingredient.Type.SAUCE),
-//                new Ingredient("SRCR", "Sour Cream", Ingredient.Type.SAUCE)
-//        );
-//
-//        Ingredient.Type[] types = Ingredient.Type.values();
-//        for (Ingredient.Type type : types) {
-//            model.addAttribute(type.toString().toLowerCase(),
-//                    filterByType(ingredients, type));
-//        }
-//    }
 
     @GetMapping
     public String showDesignForm(Model model) {
         LOGGER.debug("Getting the design page");
-        Collection<Ingredient> ingredients = ingredientRepository.findAll();
-        final Map<Ingredient.Type, List<Ingredient>> ingredientsByType = ingredients.stream()
-                .collect(groupingBy(Ingredient::getType));
-        for (Ingredient.Type type : Ingredient.Type.values()) {
+        Collection<IngredientEntity> ingredientEntities = ingredientRepository.findAll();
+        final Map<IngredientEntity.Type, List<IngredientEntity>> ingredientsByType = ingredientEntities.stream()
+                .collect(groupingBy(IngredientEntity::getType));
+        for (IngredientEntity.Type type : IngredientEntity.Type.values()) {
             model.addAttribute(type.toString().toLowerCase(), ingredientsByType.get(type));
         }
-        model.addAttribute("design", new Taco());
+        model.addAttribute("design", new TacoView());
         return "design";
     }
 
     @PostMapping
-    public String processDesign(@Valid @ModelAttribute("design") Taco design, Errors errors, @ModelAttribute Order order) {
+    public String processDesign(@Valid @ModelAttribute("design") TacoView design, Errors errors, @ModelAttribute OrderView order) {
         if (errors.hasErrors()) {
             return "redirect:/design";
         }
         LOGGER.info("Processing design: " + design);
-        Taco taco = tacoRepository.save(design);
-        order.addDesign(taco);
+        TacoEntity tacoEntity = conversionService.convert(design, TacoEntity.class);
+        tacoEntity = tacoRepository.save(tacoEntity);
+        order.addDesign(design);
         return "redirect:/orders/current";
     }
 
     @ModelAttribute(name = "order")
-    public Order order() {
-        return new Order();
+    public OrderView order() {
+        return new OrderView();
     }
 
     @ModelAttribute(name = "taco")
-    public Taco taco() {
-        return new Taco();
+    public TacoView taco() {
+        return new TacoView();
     }
 }

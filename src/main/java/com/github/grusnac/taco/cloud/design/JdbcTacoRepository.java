@@ -1,7 +1,5 @@
-package com.github.grusnac.taco.cloud.db;
+package com.github.grusnac.taco.cloud.design;
 
-import com.github.grusnac.taco.cloud.design.Ingredient;
-import com.github.grusnac.taco.cloud.design.Taco;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.PreparedStatementCreatorFactory;
@@ -25,16 +23,16 @@ public class JdbcTacoRepository implements TacoRepository {
     }
 
     @Override
-    public Taco save(Taco taco) {
+    public TacoEntity save(TacoEntity taco) {
         final long tacoId = saveTacoDetails(taco);
         taco.setId(tacoId);
-        for (Ingredient ingredient : taco.getIngredients()) {
-            saveIngredientToTaco(ingredient, tacoId);
+        for (IngredientEntity ingredientEntity : taco.getIngredients()) {
+            saveIngredientToTaco(ingredientEntity, tacoId);
         }
         return taco;
     }
 
-    private long saveTacoDetails(Taco taco) {
+    private long saveTacoDetails(TacoEntity taco) {
         taco.setPlacedAt(ZonedDateTime.now(ZoneOffset.UTC));
         PreparedStatementCreatorFactory preparedStatementCreatorFactory =  new PreparedStatementCreatorFactory("insert into Taco (name, placedAt) values (?, ?)", Types.VARCHAR, Types.TIMESTAMP);
         preparedStatementCreatorFactory.setReturnGeneratedKeys(true);
@@ -45,8 +43,8 @@ public class JdbcTacoRepository implements TacoRepository {
         return keyHolder.getKey().longValue();
     }
 
-    private void saveIngredientToTaco(Ingredient ingredient, long tacoId) {
+    private void saveIngredientToTaco(IngredientEntity ingredientEntity, long tacoId) {
         jdbcTemplate.update("insert into TacoIngredients (taco, ingredient) values (?, ?)",
-                tacoId, ingredient.getId());
+                tacoId, ingredientEntity.getId());
     }
 }

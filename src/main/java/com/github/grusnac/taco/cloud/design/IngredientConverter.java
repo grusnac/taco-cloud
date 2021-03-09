@@ -1,11 +1,10 @@
 package com.github.grusnac.taco.cloud.design;
 
-import com.github.grusnac.taco.cloud.db.IngredientRepository;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
 @Component
-public class IngredientConverter implements Converter<String, Ingredient> {
+public class IngredientConverter implements Converter<String, IngredientEntity> {
 
     private IngredientRepository ingredientRepo;
 
@@ -14,7 +13,7 @@ public class IngredientConverter implements Converter<String, Ingredient> {
     }
 
     @Override
-    public Ingredient convert(String ingredientId) {
+    public IngredientEntity convert(String ingredientId) {
         return ingredientRepo.find(ingredientId);
     }
 }

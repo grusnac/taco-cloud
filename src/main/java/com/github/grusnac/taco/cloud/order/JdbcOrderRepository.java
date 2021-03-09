@@ -1,8 +1,7 @@
 package com.github.grusnac.taco.cloud.order;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.grusnac.taco.cloud.db.OrderRepository;
-import com.github.grusnac.taco.cloud.design.Taco;
+import com.github.grusnac.taco.cloud.design.TacoEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Component;
@@ -29,26 +28,26 @@ public class JdbcOrderRepository implements OrderRepository {
         this.objectMapper = new ObjectMapper();
     }
 
-    public Order save(Order order) {
+    public OrderEntity save(OrderEntity order) {
         order.setPlacedAt(ZonedDateTime.now(ZoneOffset.UTC));
         order.setDeliveryDate(ZonedDateTime.now(ZoneOffset.UTC));
         final long orderId = saveOrderDetails(order);
         order.setId(orderId);
-        final List<Taco> tacos = order.getTacos();
-        for (Taco taco : tacos) {
+        final List<TacoEntity> tacos = order.getTacos();
+        for (TacoEntity taco : tacos) {
             saveToOrder(taco, orderId);
         }
         return order;
     }
 
-    private long saveOrderDetails(Order order) {
+    private long saveOrderDetails(OrderEntity order) {
         Map<String, Object> values = objectMapper.convertValue(order, Map.class);
         values.put("placedAt", order.getPlacedAt());
         values.put("deliveryDate", order.getPlacedAt());
         return orderInserter.executeAndReturnKey(values).longValue();
     }
 
-    private void saveToOrder(Taco taco, long orderId) {
+    private void saveToOrder(TacoEntity taco, long orderId) {
         final Map<String, Object> values = new HashMap<>();
         values.put("tacoOrder", orderId);
         values.put("taco", taco.getId());

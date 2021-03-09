@@ -1,38 +1,26 @@
 package com.github.grusnac.taco.cloud.order;
 
-import com.github.grusnac.taco.cloud.design.Taco;
-import org.hibernate.validator.constraints.CreditCardNumber;
+import com.github.grusnac.taco.cloud.design.TacoEntity;
 
-import javax.validation.constraints.Digits;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Pattern;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class Order {
+public class OrderEntity {
 
     private long id;
     private ZonedDateTime placedAt;
     private ZonedDateTime deliveryDate;
-    @NotBlank(message = "Name is required")
     private String deliveryName;
-    @NotBlank(message = "Street is required")
     private String deliveryStreet;
-    @NotBlank(message = "City is required")
     private String deliveryCity;
-    @NotBlank(message = "State is required")
     private String deliveryState;
-    @NotBlank(message = "Zip code is required")
     private String deliveryZip;
-    @CreditCardNumber(message = "Not a valid credit card number") //valid PAN 9067739166961106
     private String ccNumber;
-    @Pattern(regexp = "^(0[1-9]|1[0-2])(/)([1-9][0-9])$", message = "Must be formatted MM/YY")
     private String ccExpiration;
-    @Digits(integer = 3, fraction = 0, message = "Invalid CVV")
     private String cccVV;
-    private List<Taco> tacos = new ArrayList<>();
+    private List<TacoEntity> tacos = new ArrayList<>();
 
     @Override
     public String toString() {
@@ -60,7 +48,7 @@ public class Order {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        Order order = (Order) o;
+        OrderEntity order = (OrderEntity) o;
         return Objects.equals(getDeliveryName(), order.getDeliveryName())
                 && Objects.equals(getDeliveryDate(), order.getDeliveryDate())
                 && Objects.equals(getPlacedAt(), order.getPlacedAt())
@@ -75,7 +63,8 @@ public class Order {
 
     @Override
     public int hashCode() {
-        return Objects.hash(getDeliveryName(), getDeliveryStreet(), getDeliveryCity(), getDeliveryState(), getDeliveryZip(), getCcNumber(), getCcExpiration(), getCccVV());
+        return Objects.hash(getId(), getPlacedAt(), getDeliveryDate(), getDeliveryName(), getDeliveryStreet(),
+                getDeliveryCity(), getDeliveryState(), getDeliveryZip(), getCcNumber(), getCcExpiration(), getCccVV());
     }
 
     public long getId() {
@@ -166,15 +155,15 @@ public class Order {
         this.cccVV = cccVV;
     }
 
-    public List<Taco> getTacos() {
+    public List<TacoEntity> getTacos() {
         return tacos;
     }
 
-    public void setTacos(List<Taco> tacos) {
+    public void setTacos(List<TacoEntity> tacos) {
         this.tacos = tacos;
     }
 
-    public void addDesign(Taco taco) {
+    public void addDesign(TacoEntity taco) {
         tacos.add(taco);
     }
 }
