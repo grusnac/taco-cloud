@@ -3,12 +3,11 @@ package com.github.grusnac.taco.cloud.design;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public final class TacoView {
+public final class Taco {
 
     @NotNull
     @Size(min = 5, message = "Name must be at least 5 characters long")
@@ -24,7 +23,7 @@ public final class TacoView {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        TacoView taco = (TacoView) o;
+        Taco taco = (Taco) o;
         return Objects.equals(name, taco.name)
                 && Objects.equals(ingredients, taco.ingredients);
     }

@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 import static java.util.stream.Collectors.toList;
 
 @Component
-public class TacoViewConverter implements Converter<TacoView, TacoEntity> {
+public class TacoViewConverter implements Converter<Taco, TacoEntity> {
 
     private final IngredientConverter ingredientConverter;
 
@@ -15,10 +15,10 @@ public class TacoViewConverter implements Converter<TacoView, TacoEntity> {
     }
 
     @Override
-    public TacoEntity convert(TacoView tacoView) {
+    public TacoEntity convert(Taco taco) {
         final TacoEntity tacoEntity = new TacoEntity();
-        tacoEntity.setName(tacoView.name);
-        tacoEntity.setIngredients(tacoView.ingredients.stream().map(ingredientConverter::convert).collect(toList()));
+        tacoEntity.setName(taco.name);
+        tacoEntity.setIngredients(taco.ingredients.stream().map(ingredientConverter::convert).collect(toList()));
         return tacoEntity;
     }
 }

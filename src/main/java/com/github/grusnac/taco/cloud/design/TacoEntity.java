@@ -1,16 +1,38 @@
 package com.github.grusnac.taco.cloud.design;
 
+import javax.persistence.*;
+import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+@Entity(name = "Taco")
+@Table(name = "Taco")
 public class TacoEntity {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
     private String name;
     private ZonedDateTime placedAt;
+    @ManyToMany(targetEntity = IngredientEntity.class, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(name = "Taco_Ingredients", joinColumns = @JoinColumn(name = "taco"), inverseJoinColumns = @JoinColumn(name = "ingredient"))
     private List<IngredientEntity> ingredientEntities = new ArrayList<>();
+
+    protected TacoEntity() {
+    }
+
+    public TacoEntity(long id, String name, ZonedDateTime placedAt, List<IngredientEntity> ingredientEntities) {
+        this.id = id;
+        this.name = name;
+        this.placedAt = placedAt;
+        this.ingredientEntities = ingredientEntities;
+    }
+
+    void createdAt() {
+        this.setPlacedAt(ZonedDateTime.now(ZoneOffset.UTC));
+    }
 
     public long getId() {
         return id;

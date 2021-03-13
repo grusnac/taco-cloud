@@ -1,6 +1,6 @@
 package com.github.grusnac.taco.cloud.order;
 
-import com.github.grusnac.taco.cloud.design.TacoView;
+import com.github.grusnac.taco.cloud.design.Taco;
 import org.hibernate.validator.constraints.CreditCardNumber;
 
 import javax.validation.constraints.Digits;
@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class OrderView {
+public class Order {
 
     @NotBlank(message = "Name is required")
     public String name;
@@ -28,7 +28,7 @@ public class OrderView {
     public String ccExpiration;
     @Digits(integer = 3, fraction = 0, message = "Invalid CVV")
     public String cccVV;
-    public List<TacoView> tacos = new ArrayList<>();
+    public List<Taco> tacos = new ArrayList<>();
 
     @Override
     public String toString() {
@@ -53,7 +53,7 @@ public class OrderView {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        OrderView order = (OrderView) o;
+        Order order = (Order) o;
         return Objects.equals(name, order.name)
                 && Objects.equals(street, order.street)
                 && Objects.equals(city, order.city)
@@ -133,15 +133,15 @@ public class OrderView {
         this.cccVV = cccVV;
     }
 
-    public List<TacoView> getTacos() {
+    public List<Taco> getTacos() {
         return tacos;
     }
 
-    public void setTacos(List<TacoView> tacos) {
+    public void setTacos(List<Taco> tacos) {
         this.tacos = tacos;
     }
 
-    public void addDesign(TacoView tacos) {
+    public void addDesign(Taco tacos) {
         this.tacos.add(tacos);
     }
 }

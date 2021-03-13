@@ -1,11 +1,11 @@
 delete
-from TacoOrderTacos;
+from Taco_Order_Tacos;
 delete
-from TacoIngredients;
+from Taco_Ingredients;
 delete
 from Taco;
 delete
-from TacoOrder;
+from Taco_Order;
 delete
 from Ingredient;
 

@@ -2,13 +2,19 @@ package com.github.grusnac.taco.cloud.order;
 
 import com.github.grusnac.taco.cloud.design.TacoEntity;
 
+import javax.persistence.*;
+import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+@Entity(name = "Order")
+@Table(name = "Taco_Order")
 public class OrderEntity {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
     private ZonedDateTime placedAt;
     private ZonedDateTime deliveryDate;
@@ -20,24 +26,13 @@ public class OrderEntity {
     private String ccNumber;
     private String ccExpiration;
     private String cccVV;
+    @ManyToMany(targetEntity = TacoEntity.class, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(name = "Taco_Order_Tacos", joinColumns = @JoinColumn(name = "tacoOrder"), inverseJoinColumns = @JoinColumn(name = "taco"))
     private List<TacoEntity> tacos = new ArrayList<>();
 
-    @Override
-    public String toString() {
-        return "Order {" +
-                "id=" + id + "', " +
-                "placedAt=" + placedAt + "', " +
-                "deliveryDate=" + deliveryDate + "', " +
-                "deliveryName='" + deliveryName +  "', " +
-                "deliveryStreet='" + deliveryStreet +  "', " +
-                "deliveryCity='" + deliveryCity +  "', " +
-                "deliverySate='" + deliveryState +  "', " +
-                "deliveryZip='" + deliveryZip +  "', " +
-                "ccNumber='" + ccNumber +  "', " +
-                "ccExpiration='" + ccExpiration +  "', " +
-                "cccVV='" + cccVV +  "', " +
-                "tacos=" + tacos +
-                "}";
+    @PrePersist
+    void placedAt() {
+        this.setPlacedAt(ZonedDateTime.now(ZoneOffset.UTC));
     }
 
     @Override
@@ -48,23 +43,25 @@ public class OrderEntity {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        OrderEntity order = (OrderEntity) o;
-        return Objects.equals(getDeliveryName(), order.getDeliveryName())
-                && Objects.equals(getDeliveryDate(), order.getDeliveryDate())
-                && Objects.equals(getPlacedAt(), order.getPlacedAt())
-                && Objects.equals(getDeliveryStreet(), order.getDeliveryStreet())
-                && Objects.equals(getDeliveryCity(), order.getDeliveryCity())
-                && Objects.equals(getDeliveryState(), order.getDeliveryState())
-                && Objects.equals(getDeliveryZip(), order.getDeliveryZip())
-                && Objects.equals(getCcNumber(), order.getCcNumber())
-                && Objects.equals(getCcExpiration(), order.getCcExpiration())
-                && Objects.equals(getCccVV(), order.getCccVV());
+        final OrderEntity that = (OrderEntity) o;
+        return id == that.id
+                && Objects.equals(placedAt, that.placedAt)
+                && Objects.equals(deliveryDate, that.deliveryDate)
+                && Objects.equals(deliveryName, that.deliveryName)
+                && Objects.equals(deliveryStreet, that.deliveryStreet)
+                && Objects.equals(deliveryCity, that.deliveryCity)
+                && Objects.equals(deliveryState, that.deliveryState)
+                && Objects.equals(deliveryZip, that.deliveryZip)
+                && Objects.equals(ccNumber, that.ccNumber)
+                && Objects.equals(ccExpiration, that.ccExpiration)
+                && Objects.equals(cccVV, that.cccVV)
+                && Objects.equals(tacos, that.tacos);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getPlacedAt(), getDeliveryDate(), getDeliveryName(), getDeliveryStreet(),
-                getDeliveryCity(), getDeliveryState(), getDeliveryZip(), getCcNumber(), getCcExpiration(), getCccVV());
+        return Objects.hash(id, placedAt, deliveryDate, deliveryName, deliveryStreet, deliveryCity,
+                deliveryState, deliveryZip, ccNumber, ccExpiration, cccVV, tacos);
     }
 
     public long getId() {

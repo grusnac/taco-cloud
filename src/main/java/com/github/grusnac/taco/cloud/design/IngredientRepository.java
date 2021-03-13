@@ -1,11 +1,9 @@
 package com.github.grusnac.taco.cloud.design;
 
-import java.util.Collection;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
 
-public interface IngredientRepository {
-    Collection<IngredientEntity> findAll();
+@Repository
+public interface IngredientRepository extends CrudRepository<IngredientEntity, String> {
 
-    IngredientEntity find(String id);
-
-    IngredientEntity save(IngredientEntity ingredientEntity);
 }

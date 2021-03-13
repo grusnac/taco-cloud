@@ -1,6 +1,6 @@
 package com.github.grusnac.taco.cloud.design;
 
-import com.github.grusnac.taco.cloud.order.OrderView;
+import com.github.grusnac.taco.cloud.order.Order;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.convert.ConversionService;
@@ -10,15 +10,14 @@ import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.Collection;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import static java.util.stream.Collectors.groupingBy;
-
 @Controller
 @RequestMapping("/design")
-@SessionAttributes("order")
+@SessionAttributes(value = "order")
 public class DesignTacoController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DesignTacoController.class);
@@ -34,38 +33,45 @@ public class DesignTacoController {
         this.conversionService = conversionService;
     }
 
+    @ModelAttribute(name = "order")
+    public Order order() {
+        return new Order();
+    }
+
+    @ModelAttribute(name = "design")
+    public Taco design() {
+        return new Taco();
+    }
+
     @GetMapping
     public String showDesignForm(Model model) {
         LOGGER.debug("Getting the design page");
-        Collection<IngredientEntity> ingredientEntities = ingredientRepository.findAll();
-        final Map<IngredientEntity.Type, List<IngredientEntity>> ingredientsByType = ingredientEntities.stream()
-                .collect(groupingBy(IngredientEntity::getType));
+        final Iterable<IngredientEntity> ingredientEntities = ingredientRepository.findAll();
+        final Map<IngredientEntity.Type, List<IngredientEntity>> ingredientsByType = new HashMap<>();
+        for (IngredientEntity ingredientEntity : ingredientEntities) {
+            ingredientsByType.compute(ingredientEntity.getType(), (type, ingredients) -> {
+                if (ingredients == null) {
+                    ingredients = new LinkedList<>();
+                }
+                ingredients.add(ingredientEntity);
+                return ingredients;
+            });
+        }
         for (IngredientEntity.Type type : IngredientEntity.Type.values()) {
             model.addAttribute(type.toString().toLowerCase(), ingredientsByType.get(type));
         }
-        model.addAttribute("design", new TacoView());
         return "design";
     }
 
     @PostMapping
-    public String processDesign(@Valid @ModelAttribute("design") TacoView design, Errors errors, @ModelAttribute OrderView order) {
+    public String processDesign(@Valid Taco design, Errors errors, @ModelAttribute Order order) {
         if (errors.hasErrors()) {
-            return "redirect:/design";
+            return "design";
         }
         LOGGER.info("Processing design: " + design);
         TacoEntity tacoEntity = conversionService.convert(design, TacoEntity.class);
-        tacoEntity = tacoRepository.save(tacoEntity);
+        tacoRepository.save(tacoEntity);
         order.addDesign(design);
         return "redirect:/orders/current";
-    }
-
-    @ModelAttribute(name = "order")
-    public OrderView order() {
-        return new OrderView();
-    }
-
-    @ModelAttribute(name = "taco")
-    public TacoView taco() {
-        return new TacoView();
     }
 }

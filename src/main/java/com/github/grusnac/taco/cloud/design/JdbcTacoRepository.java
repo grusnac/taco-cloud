@@ -44,7 +44,7 @@ public class JdbcTacoRepository implements TacoRepository {
     }
 
     private void saveIngredientToTaco(IngredientEntity ingredientEntity, long tacoId) {
-        jdbcTemplate.update("insert into TacoIngredients (taco, ingredient) values (?, ?)",
+        jdbcTemplate.update("insert into Taco_Ingredients (taco, ingredient) values (?, ?)",
                 tacoId, ingredientEntity.getId());
     }
 }
