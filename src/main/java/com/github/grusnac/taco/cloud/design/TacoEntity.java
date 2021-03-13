@@ -12,12 +12,14 @@ import java.util.Objects;
 public class TacoEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     private String name;
     private ZonedDateTime placedAt;
     @ManyToMany(targetEntity = IngredientEntity.class, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinTable(name = "Taco_Ingredients", joinColumns = @JoinColumn(name = "taco"), inverseJoinColumns = @JoinColumn(name = "ingredient"))
+    @JoinTable(name = "Taco_Ingredients",
+            joinColumns = @JoinColumn(name = "taco"),
+            inverseJoinColumns = @JoinColumn(name = "ingredient"))
     private List<IngredientEntity> ingredientEntities = new ArrayList<>();
 
     protected TacoEntity() {
@@ -30,7 +32,8 @@ public class TacoEntity {
         this.ingredientEntities = ingredientEntities;
     }
 
-    void createdAt() {
+    @PrePersist
+    void placedAt() {
         this.setPlacedAt(ZonedDateTime.now(ZoneOffset.UTC));
     }
 

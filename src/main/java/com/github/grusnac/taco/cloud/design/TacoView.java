@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public final class Taco {
+public final class TacoView {
 
     @NotNull
     @Size(min = 5, message = "Name must be at least 5 characters long")
@@ -23,9 +23,9 @@ public final class Taco {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        Taco taco = (Taco) o;
-        return Objects.equals(name, taco.name)
-                && Objects.equals(ingredients, taco.ingredients);
+        TacoView tacoView = (TacoView) o;
+        return Objects.equals(name, tacoView.name)
+                && Objects.equals(ingredients, tacoView.ingredients);
     }
 
     @Override
@@ -35,7 +35,7 @@ public final class Taco {
 
     @Override
     public String toString() {
-        return "Taco {" +
+        return "TacoView {" +
                 "name='" + name + "', " +
                 "ingredients=" + ingredients +
                 "}";

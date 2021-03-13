@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 import static java.util.stream.Collectors.toList;
 
 @Component
-public class OrderViewConverter implements Converter<Order, OrderEntity> {
+public class OrderViewConverter implements Converter<OrderView, OrderEntity> {
 
     private final TacoViewConverter tacoViewConverter;
 
@@ -16,17 +16,17 @@ public class OrderViewConverter implements Converter<Order, OrderEntity> {
     }
 
     @Override
-    public OrderEntity convert(Order order) {
+    public OrderEntity convert(OrderView orderView) {
         final OrderEntity orderEntity = new OrderEntity();
-        orderEntity.setTacos(order.tacos.stream().map(tacoViewConverter::convert).collect(toList()));
-        orderEntity.setCcExpiration(order.ccExpiration);
-        orderEntity.setCcNumber(order.ccNumber);
-        orderEntity.setCccVV(order.cccVV);
-        orderEntity.setDeliveryCity(order.city);
-        orderEntity.setDeliveryName(order.name);
-        orderEntity.setDeliveryState(order.state);
-        orderEntity.setDeliveryStreet(order.street);
-        orderEntity.setDeliveryZip(order.zip);
+        orderEntity.setTacos(orderView.tacos.stream().map(tacoViewConverter::convert).collect(toList()));
+        orderEntity.setCcExpiration(orderView.ccExpiration);
+        orderEntity.setCcNumber(orderView.ccNumber);
+        orderEntity.setCcCvv(orderView.ccCvv);
+        orderEntity.setDeliveryCity(orderView.address.city);
+        orderEntity.setDeliveryName(orderView.address.name);
+        orderEntity.setDeliveryState(orderView.address.state);
+        orderEntity.setDeliveryStreet(orderView.address.street);
+        orderEntity.setDeliveryZip(orderView.address.zip);
         return orderEntity;
     }
 }

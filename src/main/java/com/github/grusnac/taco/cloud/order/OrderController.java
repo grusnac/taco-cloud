@@ -12,7 +12,7 @@ import javax.validation.Valid;
 
 @Controller
 @RequestMapping("/orders")
-@SessionAttributes(value = "order")
+@SessionAttributes("order")
 public class OrderController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(OrderController.class);
@@ -31,12 +31,15 @@ public class OrderController {
     }
 
     @PostMapping
-    public String processOrder(@Valid Order order, Errors errors, SessionStatus sessionStatus) {
+    public String processOrder(@Valid @ModelAttribute("order") OrderView orderView, Errors errors,
+                               SessionStatus sessionStatus) {
         if (errors.hasErrors()) {
             return "order-form";
         }
-        LOGGER.info("Processing order: {}", order);
-        orderRepository.save(conversionService.convert(order, OrderEntity.class));
+        LOGGER.info("Processing order: {}", orderView);
+        final OrderEntity orderEntity = conversionService.convert(orderView, OrderEntity.class);
+        assert orderEntity != null;
+        orderRepository.save(orderEntity);
         sessionStatus.setComplete();
         return "redirect:/";
     }

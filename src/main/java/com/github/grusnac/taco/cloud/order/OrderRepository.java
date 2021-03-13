@@ -1,9 +1,7 @@
 package com.github.grusnac.taco.cloud.order;
 
-import com.github.grusnac.taco.cloud.order.OrderEntity;
+import org.springframework.data.repository.CrudRepository;
 
-public interface OrderRepository {
-
-    OrderEntity save(OrderEntity order);
+public interface OrderRepository extends CrudRepository<OrderEntity, String> {
 
 }

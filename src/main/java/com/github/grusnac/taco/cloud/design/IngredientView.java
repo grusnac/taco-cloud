@@ -1,23 +1,14 @@
 package com.github.grusnac.taco.cloud.design;
 
-import javax.persistence.*;
 import java.util.Objects;
 
-@Entity(name = "Ingredient")
-@Table(name = "Ingredient")
-public class IngredientEntity {
+public class IngredientView {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private String id;
-    private String name;
-    @Enumerated(EnumType.STRING)
-    private Type type;
+    public String id;
+    public String name;
+    public String type;
 
-    protected IngredientEntity() {
-    }
-
-    public IngredientEntity(String id, String name, Type type) {
+    public IngredientView(String id, String name, String type) {
         this.id = id;
         this.name = name;
         this.type = type;
@@ -25,7 +16,7 @@ public class IngredientEntity {
 
     @Override
     public String toString() {
-        return "IngredientEntity {" +
+        return "IngredientView {" +
                 "id='" + id + "', " +
                 "name='" + name + "', " +
                 "type='" + type + "', " +
@@ -40,15 +31,15 @@ public class IngredientEntity {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        IngredientEntity that = (IngredientEntity) o;
-        return Objects.equals(getId(), that.getId())
-                && Objects.equals(getName(), that.getName())
-                && getType() == that.getType();
+        IngredientView that = (IngredientView) o;
+        return Objects.equals(id, that.id)
+                && Objects.equals(name, that.name)
+                && Objects.equals(type, that.type);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getName(), getType());
+        return Objects.hash(id, name, type);
     }
 
     public String getId() {
@@ -67,19 +58,11 @@ public class IngredientEntity {
         this.name = name;
     }
 
-    public Type getType() {
+    public String getType() {
         return type;
     }
 
-    public void setType(Type type) {
+    public void setType(String type) {
         this.type = type;
-    }
-
-    public enum Type {
-        WRAP,
-        PROTEIN,
-        VEGGIES,
-        CHEESE,
-        SAUCE
     }
 }

@@ -1,9 +1,7 @@
 package com.github.grusnac.taco.cloud.design;
 
-import com.github.grusnac.taco.cloud.design.TacoEntity;
+import org.springframework.data.repository.CrudRepository;
 
-public interface TacoRepository {
-
-    TacoEntity save(TacoEntity taco);
+public interface TacoRepository extends CrudRepository<TacoEntity, String> {
 
 }
