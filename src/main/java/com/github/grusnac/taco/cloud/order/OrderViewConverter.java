@@ -18,7 +18,9 @@ public class OrderViewConverter implements Converter<OrderView, OrderEntity> {
     @Override
     public OrderEntity convert(OrderView orderView) {
         final OrderEntity orderEntity = new OrderEntity();
-        orderEntity.setTacos(orderView.tacos.stream().map(tacoViewConverter::convert).collect(toList()));
+        orderEntity.setTacos(orderView.tacos.stream()
+                .map(tacoViewConverter::convert)
+                .collect(toList()));
         orderEntity.setCcExpiration(orderView.ccExpiration);
         orderEntity.setCcNumber(orderView.ccNumber);
         orderEntity.setCcCvv(orderView.ccCvv);

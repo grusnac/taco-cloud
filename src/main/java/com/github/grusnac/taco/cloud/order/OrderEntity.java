@@ -1,6 +1,7 @@
 package com.github.grusnac.taco.cloud.order;
 
 import com.github.grusnac.taco.cloud.design.TacoEntity;
+import com.github.grusnac.taco.cloud.user.UserEntity;
 
 import javax.persistence.*;
 import java.time.ZoneOffset;
@@ -31,6 +32,9 @@ public class OrderEntity {
             joinColumns = @JoinColumn(name = "tacoOrder"),
             inverseJoinColumns = @JoinColumn(name = "taco"))
     private List<TacoEntity> tacos = new ArrayList<>();
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private UserEntity user;
 
     @PrePersist
     void placedAt() {
@@ -70,10 +74,6 @@ public class OrderEntity {
 
     public long getId() {
         return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
     }
 
     public ZonedDateTime getPlacedAt() {
@@ -166,5 +166,13 @@ public class OrderEntity {
 
     public void addDesign(TacoEntity taco) {
         tacos.add(taco);
+    }
+
+    public UserEntity getUser() {
+        return user;
+    }
+
+    public void setUser(UserEntity user) {
+        this.user = user;
     }
 }

@@ -1,52 +1,52 @@
 package com.github.grusnac.taco.cloud.security;
 
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
+    private final UserDetailsService userDetailsService;
+
+    public SecurityConfig(UserDetailsService userDetailsService) {
+        this.userDetailsService = userDetailsService;
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
+    }
+
     @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests()
-                .anyRequest()
-                .fullyAuthenticated()
+    protected void configure(HttpSecurity httpSecurity) throws Exception {
+        httpSecurity
+                .authorizeRequests()
+                .antMatchers("/design", "/orders")
+                .hasRole("USER")
+                .antMatchers("/", "/**")
+                .permitAll()
                 .and()
-                .formLogin();
+                .formLogin()
+                .loginPage("/login")
+                .defaultSuccessUrl("/design", true)
+                .and()
+                .logout()
+                .logoutSuccessUrl("/");
+
     }
 
     @Override
     protected void configure(AuthenticationManagerBuilder authentication) throws Exception {
-//        authentication.inMemoryAuthentication()
-//                .withUser("buzz")
-//                .password("{noop}infinity")
-//                .authorities("ROLE_USER")
-//                .and()
-//                .withUser("woody")
-//                .password("{noop}bullseye")
-//                .authorities("ROLE_USER");
-
-//        JDBC Authentication
-//        authentication.jdbcAuthentication()
-//                .dataSource(dataSource)
-//                .usersByUsernameQuery("select username, password, enabled from Users where username = ?")
-//                .authoritiesByUsernameQuery("select username, authority from UserAuthorities where username = ?")
-//                .passwordEncoder(PasswordEncoderFactories.createDelegatingPasswordEncoder());
-
-//        LDAP Authentication
         authentication
-                .ldapAuthentication()
-                .userDnPatterns("uid={0},ou=people")
-                .groupSearchBase("ou=groups")
-                .contextSource()
-                .url("ldap://localhost:8389/dc=tacocloud,dc=org")
-                .and()
-                .passwordCompare()
-//                .passwordEncoder(PasswordEncoderFactories.createDelegatingPasswordEncoder())
-                .passwordAttribute("userPassword");
+                .userDetailsService(userDetailsService)
+                .passwordEncoder(passwordEncoder());
     }
 }

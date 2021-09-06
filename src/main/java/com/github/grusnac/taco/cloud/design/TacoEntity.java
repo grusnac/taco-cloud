@@ -13,7 +13,7 @@ public class TacoEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
     private String name;
     private ZonedDateTime placedAt;
     @ManyToMany(targetEntity = IngredientEntity.class, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
@@ -25,10 +25,8 @@ public class TacoEntity {
     protected TacoEntity() {
     }
 
-    public TacoEntity(long id, String name, ZonedDateTime placedAt, List<IngredientEntity> ingredientEntities) {
-        this.id = id;
+    public TacoEntity(String name, List<IngredientEntity> ingredientEntities) {
         this.name = name;
-        this.placedAt = placedAt;
         this.ingredientEntities = ingredientEntities;
     }
 
@@ -37,12 +35,8 @@ public class TacoEntity {
         this.setPlacedAt(ZonedDateTime.now(ZoneOffset.UTC));
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
     }
 
     public String getName() {
